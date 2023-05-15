@@ -1,5 +1,4 @@
 import './App.css';
-//import './bootstrap.min.css';
 
 import React from "react";
 
@@ -26,7 +25,16 @@ class App extends React.Component {
 
         this.state = {
             modalActive: false,
-            data: {}
+            data: {
+                firstName: "",
+                lastName: "",
+                phone: "",
+                birthday: "",
+                website: "",
+                description: "",
+                technologyStack: "",
+                lastProjectDescription: ""
+            }
         }
     }
 
@@ -118,9 +126,26 @@ class App extends React.Component {
             this.setState({errors: true})
             return;
         }
-        //console.log(errors)
         this.setState({data: dataEntries})
         this.setState({modalActive: true})
+    }
+
+    clearForm() {
+        this.setState(prevState => {
+            let data = Object.assign({}, prevState.data);
+            Object.keys(this.state.data).forEach(key => {
+                data[key] = ''
+            })
+            return { data }
+        })
+    }
+
+    changeHandler(name, value) {
+        this.setState(prevState => {
+            let data = Object.assign({}, prevState.data);
+            data[name] = value
+            return { data }
+        })
     }
 
 
@@ -133,14 +158,14 @@ class App extends React.Component {
                           <form onSubmit={this.handleSubmit} noValidate="novalidate">
                               {this.inputs.map(input => {
                                   if (input.type === "textarea") {
-                                      return <FormTextarea key={input.id} {...input} value={this.state.data[input.name]} />
+                                      return <FormTextarea key={input.id} {...input} value={this.state.data[input.name]} onChange={this.changeHandler.bind(this)} />
                                   } else {
-                                      return <FormInput key={input.id} {...input} value={this.state.data[input.name]} />
+                                      return <FormInput key={input.id} {...input} value={this.state.data[input.name]} onChange={this.changeHandler.bind(this)}/>
                                   }
                               })}
                               <div className="center">
                                   <div className="row form-group text-center">
-                                      <FormButton />
+                                      <FormButton onClick={this.clearForm.bind(this)}/>
                                       <FormSubmit />
                                   </div>
                               </div>

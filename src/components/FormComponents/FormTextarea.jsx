@@ -24,6 +24,7 @@ class FormTextarea extends FormBaseComponent {
     inputHandler(e){
         let val = e.target.value
         this.setState({counter : val.length})
+        this.props.onChange(this.props.name, val)
     }
 
     validatorHandler(e){
@@ -52,7 +53,9 @@ class FormTextarea extends FormBaseComponent {
                     onChange={this.inputHandler}
                     onBlur={this.validatorHandler}
                     onFocus={() => this.setState({error: ''})}
-                    style={{resize: 'none'}}>
+                    style={{resize: 'none'}}
+                    value={this.props.value}>
+
                 </textarea>
                 <div className="row">
                     <p className="info">{"Characters remaining: " + (600 - this.state.counter)}</p>

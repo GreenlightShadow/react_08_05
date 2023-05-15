@@ -8,8 +8,7 @@ class FormInput extends FormBaseComponent{
 
         this.state = {
             error: '',
-            value: '',
-            focused: false
+            value: ''
         }
 
         this.validatorHandler = this.validatorHandler.bind(this)
@@ -17,14 +16,16 @@ class FormInput extends FormBaseComponent{
         this.formatPhoneNumber = this.formatPhoneNumber.bind(this)
     }
 
+    validationError = `${this.props.label} is invalid`
+    requiredError = `${this.props.label}  should not be empty`
+
     validatorHandler(e){
         let value = e.target.value
-        this.setState({focus: true})
 
         if (value === '') {
-            this.setState({error: this.props.label + ' should not be empty'})
+            this.setState({error: this.requiredError})
         } else if (!new RegExp(this.props.regex, 'gm').test(value)) {
-            this.setState({error: this.props.label + ' is invalid'})
+            this.setState({error: this.validationError})
         } else {
             this.setState({error: ''})
         }
@@ -83,7 +84,7 @@ class FormInput extends FormBaseComponent{
                       placeholder={this.props.placeholder}
                       required={true}
                />
-               <p className="error">{this.state.error ? this.state.error: ""}</p>
+               <p className="error">{this.state.error}</p>
             </div>
         )
     }

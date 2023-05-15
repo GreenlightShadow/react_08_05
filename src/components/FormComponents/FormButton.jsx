@@ -2,20 +2,16 @@ import React from "react";
 import FormBaseComponent from "./FormBaseComponent";
 
 class FormButton extends FormBaseComponent {
+    constructor(props) {
+        super(props);
+
+        this.handleReset = this.handleReset.bind(this)
+    }
+
     handleReset () {
-        let inputs = document.querySelectorAll('input');
-        let textAreas = document.querySelectorAll('textarea');
+        this.props.onClick()
         let errors = document.querySelectorAll('.error');
         let infos = document.querySelectorAll('.info');
-        inputs.forEach(input => {
-            if(input.type !== 'button') {
-                input.value = ""
-            }
-        })
-
-        textAreas.forEach(textarea => {
-            textarea.value = ''
-        })
 
         errors.forEach(error => {
             error.innerHTML = ''

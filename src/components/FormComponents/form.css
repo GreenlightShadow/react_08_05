@@ -70,15 +70,10 @@ p{
 
 .error{
     color: red;
-    transform: scale(0);
 }
 
 .row{
     display: flex;
     flex-direction: row;
     gap: 15px;
-}
-
-input:invalid ~ .error {
-    transform: scale(1);
 }
