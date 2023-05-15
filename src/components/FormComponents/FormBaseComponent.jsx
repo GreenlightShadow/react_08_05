@@ -1,4 +1,5 @@
 import React from "react";
+import './form.css'
 
 class FormBaseComponent extends React.Component {
 
@@ -6,7 +7,6 @@ class FormBaseComponent extends React.Component {
         let result = camel.replace(/([A-Z])/g, " $1")
         return result.charAt(0).toUpperCase() + result.slice(1)
     }
-
 }
 
 
