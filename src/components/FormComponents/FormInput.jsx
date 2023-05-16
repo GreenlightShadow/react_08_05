@@ -7,7 +7,7 @@ class FormInput extends FormBaseComponent{
         super(props);
 
         this.state = {
-            error: '',
+            isFocus: false,
             value: ''
         }
 
@@ -16,26 +16,23 @@ class FormInput extends FormBaseComponent{
         this.formatPhoneNumber = this.formatPhoneNumber.bind(this)
     }
 
-    validationError = `${this.props.label} is invalid`
-    requiredError = `${this.props.label}  should not be empty`
+    textError = `${this.props.label} is invalid`
 
     validatorHandler(e){
+        this.setState({isFocus: false})
         let value = e.target.value
 
-        if (value === '') {
-            this.setState({error: this.requiredError})
-        } else if (!new RegExp(this.props.regex, 'gm').test(value)) {
-            this.setState({error: this.validationError})
+        if (value === '' || !new RegExp(this.props.regex, 'gm').test(value)) {
+            this.props.setError(this.props.name, true)
         } else {
-            this.setState({error: ''})
+            this.props.setError(this.props.name, false)
         }
     }
 
     phoneHandler(e){
-        if (this.props.name !== 'phone') {
-            return;
-        }
-        this.setState({value: this.formatPhoneNumber(e.target.value)})
+        let val = this.props.name === 'phone' ? this.formatPhoneNumber(e.target.value) : e.target.value
+
+        this.props.onChange(this.props.name, val)
     }
 
     formatPhoneNumber(val){
@@ -68,6 +65,7 @@ class FormInput extends FormBaseComponent{
         return `${phoneNumber.slice(0, 1)}-${phoneNumber.slice(1, 5)}-${phoneNumber.slice(5, 7)}-${phoneNumber.slice(7, 9)}`
 
     }
+
     render() {
         return (
             <div className="form-container">
@@ -79,17 +77,19 @@ class FormInput extends FormBaseComponent{
                       name={this.props.name}
                       onBlur={this.validatorHandler}
                       onChange={this.phoneHandler}
-                      onFocus={() => this.setState({error: ''})}
-                      value={this.props.name === 'phone' ? this.state.value : undefined}
+                      onFocus={() => {
+                          this.setState({isFocus: true})
+                          this.props.setVisited(this.props.name, true)
+                      }}
                       placeholder={this.props.placeholder}
-                      required={true}
+                      value={this.props.getData(this.props.name)}
                />
-               <p className="error">{this.state.error}</p>
+                <p className="error">{
+                    this.props.getError(this.props.name) && (this.props.getVisited(this.props.name) || this.props.submitted) && !this.state.isFocus ? this.textError : ""}
+                </p>
             </div>
         )
     }
-
-
 }
 
 

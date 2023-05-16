@@ -15,13 +15,14 @@ class App extends React.Component {
         lastName: "^[A-Z]{1}[a-z]+?$",
         birthday: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
         phone: "^[0-9]{1}-[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-        website: "^((https)://)"
+        website: "^(http|https)://"
     }
 
     constructor(props) {
         super(props);
 
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.clearForm = this.clearForm.bind(this)
 
         this.state = {
             modalActive: false,
@@ -34,7 +35,28 @@ class App extends React.Component {
                 description: "",
                 technologyStack: "",
                 lastProjectDescription: ""
-            }
+            },
+            errors: {
+                firstName: true,
+                lastName: true,
+                phone: true,
+                birthday: true,
+                website: true,
+                description: true,
+                technologyStack: true,
+                lastProjectDescription: true
+            },
+            visited: {
+                firstName: false,
+                lastName: false,
+                phone: false,
+                birthday: false,
+                website: false,
+                description: false,
+                technologyStack: false,
+                lastProjectDescription: false
+            },
+            submitted: false
         }
     }
 
@@ -44,7 +66,6 @@ class App extends React.Component {
             name: "firstName",
             type: "text",
             placeholder: "Your First Name",
-            errorMessage: "",
             label: "First Name"
         },
         {
@@ -52,7 +73,6 @@ class App extends React.Component {
             name: "lastName",
             type: "text",
             placeholder: "Your Last Name",
-            errorMessage: "",
             label: "Last Name"
         },
         {
@@ -60,7 +80,6 @@ class App extends React.Component {
             name: "birthday",
             type: "date",
             placeholder: "Your Birthday",
-            errorMessage: "",
             label: "Birthday"
         },
         {
@@ -68,7 +87,6 @@ class App extends React.Component {
             name: "phone",
             type: "text",
             placeholder: "Your Phone",
-            errorMessage: "",
             label: "Phone"
         },
         {
@@ -76,7 +94,6 @@ class App extends React.Component {
             name: "website",
             type: "text",
             placeholder: "Your Website",
-            errorMessage: "",
             label: "Website"
         },
         {
@@ -84,7 +101,6 @@ class App extends React.Component {
             name: "description",
             type: "textarea",
             placeholder: "Your Description",
-            errorMessage: "",
             label: "Description"
         },
         {
@@ -92,7 +108,6 @@ class App extends React.Component {
             name: "technologyStack",
             type: "textarea",
             placeholder: "Your Technology Stack",
-            errorMessage: "",
             label: "Technology Stack"
         },
         {
@@ -100,34 +115,17 @@ class App extends React.Component {
             name: "lastProjectDescription",
             type: "textarea",
             placeholder: "Your Last Project Description",
-            errorMessage: "",
             label: "Last Project Description"
         },
     ]
 
     handleSubmit(e) {
         e.preventDefault()
-        let data = new FormData(e.target)
-        let dataEntries = Object.fromEntries(data.entries())
-        let errors = 0
-        for (let index in dataEntries) {
-            if (this.regexps[index]) {
-                let regexp = new RegExp(this.regexps[index])
-                if(!regexp.test(dataEntries[index]) || dataEntries[index].length === 0) {
-                    errors++
-                }
-            } else {
-                if (dataEntries[index].length > 600 || dataEntries[index].length === 0) {
-                    errors++
-                }
-            }
+        this.setState({submitted: true})
+        let errors = Object.values(this.state.errors)
+        if (errors.every(item => item === false)) {
+          this.setState({modalActive: true})
         }
-        if (errors > 0) {
-            this.setState({errors: true})
-            return;
-        }
-        this.setState({data: dataEntries})
-        this.setState({modalActive: true})
     }
 
     clearForm() {
@@ -138,6 +136,45 @@ class App extends React.Component {
             })
             return { data }
         })
+        this.setState(prevState => {
+            let errors = Object.assign({}, prevState.errors);
+            Object.keys(this.state.errors).forEach(key => {
+                errors[key] = true
+            })
+            return { errors }
+        })
+        this.setState(prevState => {
+            let visited = Object.assign({}, prevState.visited);
+            Object.keys(this.state.visited).forEach(key => {
+                visited[key] = false
+            })
+            return { visited }
+        })
+        this.setState({submitted: false})
+    }
+
+    setError(name, value) {
+        this.setState(prevState => {
+            let errors = Object.assign({}, prevState.errors);
+            errors[name] = value
+            return { errors }
+        })
+    }
+
+    getError(name) {
+        return this.state.errors[name]
+    }
+
+    setVisited(name, value) {
+        this.setState(prevState => {
+            let visited = Object.assign({}, prevState.visited);
+            visited[name] = value
+            return { visited }
+        })
+    }
+
+    getVisited(name) {
+        return this.state.visited[name]
     }
 
     changeHandler(name, value) {
@@ -146,6 +183,14 @@ class App extends React.Component {
             data[name] = value
             return { data }
         })
+    }
+
+    getData(name) {
+        return this.state.data[name]
+    }
+
+    closeModal() {
+        this.setState({modalActive: false})
     }
 
 
@@ -158,9 +203,31 @@ class App extends React.Component {
                           <form onSubmit={this.handleSubmit} noValidate="novalidate">
                               {this.inputs.map(input => {
                                   if (input.type === "textarea") {
-                                      return <FormTextarea key={input.id} {...input} value={this.state.data[input.name]} onChange={this.changeHandler.bind(this)} />
+                                      return <FormTextarea
+                                          key={input.id}
+                                          {...input}
+                                          value={this.state.data[input.name]}
+                                          onChange={this.changeHandler.bind(this)}
+                                          setError={this.setError.bind(this)}
+                                          getError={this.getError.bind(this)}
+                                          setVisited={this.setVisited.bind(this)}
+                                          getVisited={this.getVisited.bind(this)}
+                                          submitted={this.state.submitted}
+                                      />
                                   } else {
-                                      return <FormInput key={input.id} {...input} value={this.state.data[input.name]} onChange={this.changeHandler.bind(this)}/>
+                                      return <FormInput
+                                          key={input.id}
+                                          {...input}
+                                          value={this.state.data[input.name]}
+                                          onChange={this.changeHandler.bind(this)}
+                                          setError={this.setError.bind(this)}
+                                          getError={this.getError.bind(this)}
+                                          setVisited={this.setVisited.bind(this)}
+                                          getVisited={this.getVisited.bind(this)}
+                                          regex={this.regexps[input.name]}
+                                          getData={this.getData.bind(this)}
+                                          submitted={this.state.submitted}
+                                      />
                                   }
                               })}
                               <div className="center">
@@ -172,7 +239,7 @@ class App extends React.Component {
                           </form>
                       </div>
                 </div>
-                <Modal active={this.state.modalActive} data={this.state.data}/>
+                <Modal active={this.state.modalActive} close={this.closeModal.bind(this)} data={this.state.data}/>
             </div>
         );
     }

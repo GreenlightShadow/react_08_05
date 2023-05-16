@@ -10,12 +10,7 @@ class FormButton extends FormBaseComponent {
 
     handleReset () {
         this.props.onClick()
-        let errors = document.querySelectorAll('.error');
         let infos = document.querySelectorAll('.info');
-
-        errors.forEach(error => {
-            error.innerHTML = ''
-        })
 
         infos.forEach(info => {
             info.innerHTML = "Characters remaining: " + 600

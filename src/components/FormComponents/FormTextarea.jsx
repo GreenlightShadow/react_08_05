@@ -7,19 +7,15 @@ class FormTextarea extends FormBaseComponent {
         super(props)
         this.state = {
             counter : 0,
-            error : ''
+            isFocus : false
         }
 
         this.inputHandler = this.inputHandler.bind(this)
         this.validatorHandler = this.validatorHandler.bind(this)
     }
 
-
-
     limit = 600
-
-    validationError = `${this.props.label}  should not be longer than ${this.limit} characters`
-    requiredError = `${this.props.label}  should not be empty`
+    textError = `${this.props.label}  should not be longer than ${this.limit} characters or empty`
 
     inputHandler(e){
         let val = e.target.value
@@ -28,14 +24,13 @@ class FormTextarea extends FormBaseComponent {
     }
 
     validatorHandler(e){
+        this.setState({isFocus: false})
         let value = e.target.value
 
-        if (value.length === 0) {
-            this.setState({error: this.requiredError})
-        } else if (value.length === this.limit) {
-            this.setState({error : this.validationError})
+        if (value.length === 0 || value.length >= this.limit) {
+            this.props.setError(this.props.name, true)
         } else {
-            this.setState({error: ''})
+            this.props.setError(this.props.name, false)
         }
     }
 
@@ -52,14 +47,20 @@ class FormTextarea extends FormBaseComponent {
                     placeholder={this.props.placeholder}
                     onChange={this.inputHandler}
                     onBlur={this.validatorHandler}
-                    onFocus={() => this.setState({error: ''})}
+                    onFocus={() => {
+                        this.setState({isFocus: true})
+                        this.props.setVisited(this.props.name, true)
+                    }}
                     style={{resize: 'none'}}
-                    value={this.props.value}>
+                    >
 
                 </textarea>
-                <div className="row">
+                <div className="row form-textarea">
                     <p className="info">{"Characters remaining: " + (600 - this.state.counter)}</p>
-                    <p className="error">{this.state.error}</p>
+                    <p className="error">{
+                        this.props.getError(this.props.name) && (this.props.getVisited(this.props.name) || this.props.submitted) && !this.state.isFocus ? this.textError : ""
+                    }
+                    </p>
                 </div>
             </div>
         );
