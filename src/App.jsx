@@ -7,16 +7,9 @@ import FormTextarea from "./components/FormComponents/FormTextarea";
 import FormButton from "./components/FormComponents/FormButton";
 import FormSubmit from "./components/FormComponents/FormSubmit";
 import Modal from "./components/ModalComponents/Modal";
+import FormBaseComponent from "./components/FormComponents/FormBaseComponent";
 
-class App extends React.Component {
-
-    regexps = {
-        firstName: "^[A-Z]{1}[a-z]+?$",
-        lastName: "^[A-Z]{1}[a-z]+?$",
-        birthday: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-        phone: "^[0-9]{1}-[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-        website: "^(http|https)://"
-    }
+class App extends FormBaseComponent {
 
     constructor(props) {
         super(props);
@@ -26,98 +19,13 @@ class App extends React.Component {
 
         this.state = {
             modalActive: false,
-            data: {
-                firstName: "",
-                lastName: "",
-                phone: "",
-                birthday: "",
-                website: "",
-                description: "",
-                technologyStack: "",
-                lastProjectDescription: ""
-            },
-            errors: {
-                firstName: true,
-                lastName: true,
-                phone: true,
-                birthday: true,
-                website: true,
-                description: true,
-                technologyStack: true,
-                lastProjectDescription: true
-            },
-            visited: {
-                firstName: false,
-                lastName: false,
-                phone: false,
-                birthday: false,
-                website: false,
-                description: false,
-                technologyStack: false,
-                lastProjectDescription: false
-            },
+            data: this.defaultData,
+            errors: this.defaultErrors,
+            visited: this.defaultVisited,
             submitted: false
         }
     }
 
-    inputs = [
-        {
-            id: 1,
-            name: "firstName",
-            type: "text",
-            placeholder: "Your First Name",
-            label: "First Name"
-        },
-        {
-            id: 2,
-            name: "lastName",
-            type: "text",
-            placeholder: "Your Last Name",
-            label: "Last Name"
-        },
-        {
-            id: 3,
-            name: "birthday",
-            type: "date",
-            placeholder: "Your Birthday",
-            label: "Birthday"
-        },
-        {
-            id: 4,
-            name: "phone",
-            type: "text",
-            placeholder: "Your Phone",
-            label: "Phone"
-        },
-        {
-            id: 5,
-            name: "website",
-            type: "text",
-            placeholder: "Your Website",
-            label: "Website"
-        },
-        {
-            id: 6,
-            name: "description",
-            type: "textarea",
-            placeholder: "Your Description",
-            label: "Description"
-        },
-        {
-            id: 7,
-            name: "technologyStack",
-            type: "textarea",
-            placeholder: "Your Technology Stack",
-            label: "Technology Stack"
-        },
-        {
-            id: 8,
-            name: "lastProjectDescription",
-            type: "textarea",
-            placeholder: "Your Last Project Description",
-            label: "Last Project Description"
-        },
-    ]
     savedData = {}
 
     handleSubmit(e) {
@@ -125,34 +33,16 @@ class App extends React.Component {
         this.setState({submitted: true})
         let errors = Object.values(this.state.errors)
         if (errors.every(item => item === false)) {
-            this.savedData = Object.assign({}, this.state.data)
+            this.savedData = {...this.state.data}
             this.setState({modalActive: true})
             this.clearForm()
         }
     }
 
     clearForm() {
-        this.setState(prevState => {
-            let data = Object.assign({}, prevState.data);
-            Object.keys(this.state.data).forEach(key => {
-                data[key] = ''
-            })
-            return { data }
-        })
-        this.setState(prevState => {
-            let errors = Object.assign({}, prevState.errors);
-            Object.keys(this.state.errors).forEach(key => {
-                errors[key] = true
-            })
-            return { errors }
-        })
-        this.setState(prevState => {
-            let visited = Object.assign({}, prevState.visited);
-            Object.keys(this.state.visited).forEach(key => {
-                visited[key] = false
-            })
-            return { visited }
-        })
+        this.setState({data: this.defaultData})
+        this.setState({errors: this.defaultErrors})
+        this.setState({visited: this.defaultVisited})
 
         let infos = document.querySelectorAll('.info');
 
@@ -165,7 +55,7 @@ class App extends React.Component {
 
     setError(name, value) {
         this.setState(prevState => {
-            let errors = Object.assign({}, prevState.errors);
+            let errors = {...prevState.errors}
             errors[name] = value
             return { errors }
         })
@@ -177,7 +67,7 @@ class App extends React.Component {
 
     setVisited(name, value) {
         this.setState(prevState => {
-            let visited = Object.assign({}, prevState.visited);
+            let visited = {...prevState.visited}
             visited[name] = value
             return { visited }
         })
@@ -189,7 +79,7 @@ class App extends React.Component {
 
     changeHandler(name, value) {
         this.setState(prevState => {
-            let data = Object.assign({}, prevState.data);
+            let data = {...prevState.data}
             data[name] = value
             return { data }
         })

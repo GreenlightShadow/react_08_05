@@ -1,7 +1,8 @@
 import React from 'react';
 import './modal.css'
+import FormBaseComponent from "../FormComponents/FormBaseComponent";
 
-class Modal extends React.Component{
+class Modal extends FormBaseComponent{
 
     render() {
         return (
@@ -9,12 +10,13 @@ class Modal extends React.Component{
                 <div className="modal__content" onClick={e => e.stopPropagation()}>
                     <h1>Hello {this.props.data.firstName} {this.props.data.lastName}</h1>
                     <h3>Your data is:</h3>
-                    <p>Phone: {this.props.data.phone}</p>
-                    <p>Birthday: {this.props.data.birthday}</p>
-                    <p>Website: {this.props.data.website}</p>
-                    <p>Your Description: {this.props.data.description}</p>
-                    <p>Your Skill Stack: {this.props.data.technologyStack}</p>
-                    <p>Your Last Project Description: {this.props.data.lastProjectDescription}</p>
+                    {this.inputs.map((input) => {
+                        return (
+                            <p key={input.id}>
+                                {input.label}: {this.props.data[input.name]}
+                            </p>
+                        );
+                    })}
                 </div>
             </div>
         );
