@@ -52,6 +52,7 @@ class FormTextarea extends FormBaseComponent {
                         this.props.setVisited(this.props.name, true)
                     }}
                     style={{resize: 'none'}}
+                    value={this.props.value}
                     >
 
                 </textarea>

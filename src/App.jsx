@@ -118,13 +118,16 @@ class App extends React.Component {
             label: "Last Project Description"
         },
     ]
+    savedData = {}
 
     handleSubmit(e) {
         e.preventDefault()
         this.setState({submitted: true})
         let errors = Object.values(this.state.errors)
         if (errors.every(item => item === false)) {
-          this.setState({modalActive: true})
+            this.savedData = Object.assign({}, this.state.data)
+            this.setState({modalActive: true})
+            this.clearForm()
         }
     }
 
@@ -239,7 +242,7 @@ class App extends React.Component {
                           </form>
                       </div>
                 </div>
-                <Modal active={this.state.modalActive} close={this.closeModal.bind(this)} data={this.state.data}/>
+                <Modal active={this.state.modalActive} close={this.closeModal.bind(this)} data={this.savedData}/>
             </div>
         );
     }
