@@ -153,6 +153,13 @@ class App extends React.Component {
             })
             return { visited }
         })
+
+        let infos = document.querySelectorAll('.info');
+
+        infos.forEach(info => {
+            info.innerHTML = "Characters remaining: " + 600
+        })
+
         this.setState({submitted: false})
     }
 
