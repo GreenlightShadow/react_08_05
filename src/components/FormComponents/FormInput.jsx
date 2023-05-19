@@ -1,41 +1,31 @@
 import React from "react";
-import FormBaseComponent from "./FormBaseComponent";
+import {useState} from "react";
+import './form.css'
 
-class FormInput extends FormBaseComponent{
+const FormInput = (props) => {
 
-    constructor(props) {
-        super(props);
+    const [isFocus, setIsFocus] = useState(false)
 
-        this.state = {
-            isFocus: false,
-            value: ''
-        }
+    const textError = `${props.label} is invalid`
 
-        this.validatorHandler = this.validatorHandler.bind(this)
-        this.phoneHandler = this.phoneHandler.bind(this)
-        this.formatPhoneNumber = this.formatPhoneNumber.bind(this)
-    }
+    const validatorHandler = (e) => {
+        setIsFocus(false)
+        let val = e.target.value
 
-    textError = `${this.props.label} is invalid`
-
-    validatorHandler(e){
-        this.setState({isFocus: false})
-        let value = e.target.value
-
-        if (value === '' || !new RegExp(this.props.regex, 'gm').test(value)) {
-            this.props.setError(this.props.name, true)
+        if (val === '' || !new RegExp(props.regex, 'gm').test(val)) {
+            props.setError(props.name, true)
         } else {
-            this.props.setError(this.props.name, false)
+            props.setError(props.name, false)
         }
     }
 
-    phoneHandler(e){
-        let val = this.props.name === 'phone' ? this.formatPhoneNumber(e.target.value) : e.target.value
+    const phoneHandler = (e) => {
+        let val = props.name === 'phone' ? formatPhoneNumber(e.target.value) : e.target.value
 
-        this.props.onChange(this.props.name, val)
+        props.onChange(props.name, val)
     }
 
-    formatPhoneNumber(val){
+    const formatPhoneNumber = (val) => {
         if (!val) {
             return val
         }
@@ -66,30 +56,28 @@ class FormInput extends FormBaseComponent{
 
     }
 
-    render() {
-        return (
-            <div className="form-container">
-               <label className="col-form-label">
-                   {this.props.label}
-               </label>
-               <input type={this.props.type ?? 'text'}
-                      className="form-control"
-                      name={this.props.name}
-                      onBlur={this.validatorHandler}
-                      onChange={this.phoneHandler}
-                      onFocus={() => {
-                          this.setState({isFocus: true})
-                          this.props.setVisited(this.props.name, true)
-                      }}
-                      placeholder={this.props.placeholder}
-                      value={this.props.getData(this.props.name)}
-               />
-                <p className="error">{
-                    this.props.getError(this.props.name) && (this.props.getVisited(this.props.name) || this.props.submitted) && !this.state.isFocus ? this.textError : ""}
-                </p>
-            </div>
-        )
-    }
+    return (
+        <div className="form-container">
+            <label className="col-form-label">
+                {props.label}
+            </label>
+            <input type={props.type ?? 'text'}
+                   className="form-control"
+                   name={props.name}
+                   onBlur={validatorHandler}
+                   onChange={phoneHandler}
+                   onFocus={() => {
+                       setIsFocus(true)
+                       props.setVisited(props.name, true)
+                   }}
+                   placeholder={props.placeholder}
+                   value={props.value}
+            />
+            <p className="error">{
+                props.getError && (props.getVisited || props.submitted) && !isFocus ? textError : ""}
+            </p>
+        </div>
+    )
 }
 
 

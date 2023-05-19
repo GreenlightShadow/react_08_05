@@ -1,15 +1,12 @@
 import React from "react";
-import FormBaseComponent from "./FormBaseComponent";
+import './form.css'
 
-class FormButton extends FormBaseComponent {
-
-    render() {
-        return (
-            <input type="button" value="Cancel"
-                   onClick={this.props.onClick}
-                   className="btn btn-danger"/>
-        );
-    }
+const  FormButton = (props) => {
+    return (
+        <input type="button" value="Cancel"
+               onClick={props.onClick}
+               className="btn btn-danger"/>
+    )
 }
 
 export default FormButton;

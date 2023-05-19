@@ -1,15 +1,12 @@
 import React from "react";
-import FormBaseComponent from "./FormBaseComponent";
+import './form.css'
 
-class FormSubmit extends FormBaseComponent{
-
-    render() {
-        return (
-            <input type="submit" value="Submit"
-                   className="btn btn-warning btn-outline-dark"
-            />
-        );
-    }
+const FormSubmit = () => {
+   return (
+       <input type="submit" value="Submit"
+              className="btn btn-warning btn-outline-dark"
+       />
+   );
 }
 
 
