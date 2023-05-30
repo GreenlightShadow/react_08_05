@@ -13,9 +13,8 @@ const FormTextarea = (props) => {
         props.onChange(props.name, value)
     }
 
-    const validatorHandler = (e) => {
+    const validatorHandler = ({ target: { value } }) => {
         setIsFocus(false)
-        let value = e.target.value
 
         if (value.length === 0 || value.length >= limit) {
             props.setError(props.name, true)
