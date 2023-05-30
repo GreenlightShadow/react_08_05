@@ -60,13 +60,6 @@ const App = () => {
         setDataList(defaultData)
         setErrors(defaultErrors)
         setVisitedList(defaultVisited)
-
-        let infos = document.querySelectorAll('.info');
-
-        infos.forEach(info => {
-            info.innerHTML = "Characters remaining: " + 600
-        })
-
         setSubmitted(false)
     }
 

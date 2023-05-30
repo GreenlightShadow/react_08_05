@@ -8,20 +8,18 @@ const FormInput = (props) => {
 
     const textError = `${props.label} is invalid`
 
-    const validatorHandler = (e) => {
+    const validatorHandler = ({ target: { value } }) => {
         setIsFocus(false)
-        let val = e.target.value
 
-        if (val === '' || !new RegExp(props.regex, 'gm').test(val)) {
+        if (value === '' || !new RegExp(props.regex, 'gm').test(value)) {
             props.setError(props.name, true)
         } else {
             props.setError(props.name, false)
         }
     }
 
-    const phoneHandler = (e) => {
-        let val = props.name === 'phone' ? formatPhoneNumber(e.target.value) : e.target.value
-
+    const phoneHandler = ({ target: { value } }) => {
+        let val = props.name === 'phone' ? formatPhoneNumber(value) : value
         props.onChange(props.name, val)
     }
 

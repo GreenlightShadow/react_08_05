@@ -4,17 +4,13 @@ import './form.css'
 
 const FormTextarea = (props) => {
 
-    const [counter, setCounter] = useState(0)
     const [isFocus, setIsFocus] = useState(false)
 
     const limit = 600
     const textError = `${props.label}  should not be longer than ${limit} characters or empty`
 
-    const inputHandler = (e) => {
-        let val = e.target.value
-        setCounter(val.length)
-        props.onChange(props.name, val)
-
+    const inputHandler = ({ target: { value } }) => {
+        props.onChange(props.name, value)
     }
 
     const validatorHandler = (e) => {
@@ -50,7 +46,7 @@ const FormTextarea = (props) => {
             >
             </textarea>
             <div className="row form-textarea">
-                <p className="info">{"Characters remaining: " + (600 - counter)}</p>
+                <p className="info">{"Characters remaining: " + (600 - props.value.length)}</p>
                 <p className="error">{
                     props.getError && (props.getVisited || props.submitted) && !isFocus ? textError : ""
                 }
